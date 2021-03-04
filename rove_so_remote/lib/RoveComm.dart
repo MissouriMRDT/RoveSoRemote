@@ -107,7 +107,7 @@ List decodePacket(int datatype, int datacount, ByteData buf) {
 }
 
 /// Parses data found in the given [data] packet. Takes care of decoding and then emitting
-/// events
+/// events.
 void parsePackets(data) {
   //Read in the data as a Int32List, then grab the buffer as bytes
   //print(data);
@@ -126,18 +126,17 @@ void parsePackets(data) {
 
   if (version == VersionNumber) {
     data = decodePacket(dataType, dataCount, new ByteData.view(rawdata.buffer));
+    // Call any functions that have asked to be notified of this packet
     if (callbacks.containsKey(dataId)) {
       for (Function func in callbacks[dataId]) {
         func(data);
       }
     }
   }
-
-  return;
 }
 
 class RoveComm {
-  var udpSock;
+  RawDatagramSocket udpSock;
   var tcpSock;
 
   RoveComm() {
@@ -162,5 +161,77 @@ class RoveComm {
 
   void doneHandler() {
     socket.close();
+  }
+
+  void sendCommand(
+      String dataId, DataTypes datatype, data, String ip, bool reliable) {
+    const VersionNumber = 2;
+
+    //single items are also treated as lists
+    if (!(data is List)) {
+      data = [data];
+    }
+    final dataCount = data.length;
+    final port = 11000;
+    final headerLength = 5;
+
+    // Allocating the right number of bytes (size of full packet)
+    var buff = ByteData(headerLength + dataCount * DataSize[datatype.index]);
+
+    // Setting the header bytes
+    buff.setUint8(0, VersionNumber);
+    buff.setUint16(1, int.parse(dataId));
+    buff.setUint8(3, dataCount);
+    buff.setUint8(4, datatype.index);
+
+    switch (datatype) {
+      case DataTypes.INT8_T:
+        for (int i = 0; i < data.length; i++) {
+          buff.setInt8(5 + i * DataSize[datatype.index], data[i]);
+        }
+        break;
+      case DataTypes.UINT8_T:
+        for (int i = 0; i < data.length; i++) {
+          buff.setUint8(5 + i * DataSize[datatype.index], data[i]);
+        }
+        break;
+      case DataTypes.INT16_T:
+        for (int i = 0; i < data.length; i++) {
+          buff.setInt16(5 + i * DataSize[datatype.index], data[i]);
+        }
+        break;
+      case DataTypes.UINT16_T:
+        for (int i = 0; i < data.length; i++) {
+          buff.setUint16(5 + i * DataSize[datatype.index], data[i]);
+        }
+        break;
+      case DataTypes.INT32_T:
+        for (int i = 0; i < data.length; i++) {
+          buff.setInt32(5 + i * DataSize[datatype.index], data[i]);
+        }
+        break;
+      case DataTypes.UINT32_T:
+        for (int i = 0; i < data.length; i++) {
+          buff.setUint32(5 + i * DataSize[datatype.index], data[i]);
+        }
+        break;
+      case DataTypes.FLOAT_T:
+        for (int i = 0; i < data.length; i++) {
+          buff.setFloat32(5 + i * DataSize[datatype.index], data[i]);
+        }
+        break;
+      case DataTypes.DOUBLE_T:
+        for (int i = 0; i < data.length; i++) {
+          buff.setFloat64(5 + i * DataSize[datatype.index], data[i]);
+        }
+        break;
+      case DataTypes.CHAR:
+        for (int i = 0; i < data.length; i++) {
+          buff.setInt8(5 + i * DataSize[datatype.index], data[i]);
+        }
+        break;
+    }
+    Uint8List listBuffer = buff.buffer.asUint8List();
+    var bytes = udpSock.send(listBuffer, InternetAddress(ip), port);
   }
 }
