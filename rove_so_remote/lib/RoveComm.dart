@@ -34,6 +34,8 @@ var DataSize = {
   9: 1,
 };
 
+var callbacks = {};
+
 StreamController stream;
 
 List decodePacket(int datatype, int datacount, ByteData buf) {
@@ -83,14 +85,13 @@ List decodePacket(int datatype, int datacount, ByteData buf) {
     case DataTypes.FLOAT_T:
       for (int i = 0; i < datacount; i++) {
         offset = i * DataSize[datatype];
-        retArray.add(buf.getFloat32(offset));
+        retArray.add(double.parse(buf.getFloat32(offset).toStringAsFixed(6)));
       }
-      print(retArray);
       return retArray;
     case DataTypes.DOUBLE_T:
       for (int i = 0; i < datacount; i++) {
         offset = i * DataSize[datatype];
-        retArray.add(buf.getFloat64(offset));
+        retArray.add(double.parse(buf.getFloat64(offset).toStringAsFixed(10)));
       }
       return retArray;
     case DataTypes.CHAR:
@@ -105,6 +106,8 @@ List decodePacket(int datatype, int datacount, ByteData buf) {
   }
 }
 
+/// Parses data found in the given [data] packet. Takes care of decoding and then emitting
+/// events
 void parsePackets(data) {
   //Read in the data as a Int32List, then grab the buffer as bytes
   //print(data);
@@ -123,8 +126,11 @@ void parsePackets(data) {
 
   if (version == VersionNumber) {
     data = decodePacket(dataType, dataCount, new ByteData.view(rawdata.buffer));
-    //print(data);
-    //stream.sink.add(data);
+    if (callbacks.containsKey(dataId)) {
+      for (Function func in callbacks[dataId]) {
+        func(data);
+      }
+    }
   }
 
   return;
@@ -140,7 +146,6 @@ class RoveComm {
       udpSock = sock;
       sock.listen(dataHandler,
           onError: errorHandler, onDone: doneHandler, cancelOnError: false);
-      sleep(Duration(seconds: 2));
     });
   }
 

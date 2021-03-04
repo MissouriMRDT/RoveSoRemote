@@ -3,10 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
 import 'package:rove_so_remote/RoveComm.dart';
 import 'dart:developer' as developer;
-import 'package:rove_so_remote/RoveComm.dart';
 
 void main() => runApp(MyApp());
 
@@ -41,6 +39,7 @@ class HomePage extends StatelessWidget {
                 onPressed: () {
                   _displayTextInputDialog(context);
                 }),
+            TextWidget(),
           ],
         ),
       ),
@@ -76,6 +75,44 @@ class HomePage extends StatelessWidget {
             ],
           );
         });
+  }
+}
+
+class TextWidget extends StatefulWidget {
+  @override
+  _TextWidgetState createState() => _TextWidgetState();
+}
+
+class _TextWidgetState extends State<TextWidget>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+  var roveCommString = "";
+
+  void updateText(data) {
+    setState(() {
+      roveCommString = data.toString();
+    });
+    print(roveCommString);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    callbacks[1001] = [
+      updateText,
+    ];
+    return Text("$roveCommString");
   }
 }
 // #enddocregion build
