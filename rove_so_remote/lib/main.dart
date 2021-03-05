@@ -7,23 +7,21 @@ import 'package:rove_so_remote/RoveComm.dart';
 import 'dart:developer' as developer;
 import 'package:control_pad/control_pad.dart';
 
-void main() => runApp(MyApp());
-
-// #docregion MyApp
-class MyApp extends StatelessWidget {
-  // #docregion build
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Startup Name Generator',
-        theme: ThemeData(primaryColor: Colors.red),
-        home: HomePage());
-  }
-}
-
 int map_range(double x, int in_min, int in_max, int out_min, int out_max) {
   return ((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
       .round();
+}
+
+void main() => runApp(RoveSoRemoteApp());
+
+class RoveSoRemoteApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: 'RoveSoRemote',
+        theme: ThemeData(primaryColor: Colors.red),
+        home: HomePage());
+  }
 }
 
 class HomePage extends StatefulWidget {
@@ -100,6 +98,27 @@ class _HomePageState extends State<HomePage> {
             JoystickView(size: 150, onDirectionChanged: sendDriveCommand),
           ],
         )
+      ],
+      [
+        SizedBox(
+            width: 300.0,
+            height: 400.0,
+            child: ElevatedButton(
+                onPressed: () {
+                  rc.sendCommand(
+                      "2000", DataTypes.UINT8_T, 0, "192.168.1.133", false);
+                  print("Pressed");
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.pressed))
+                        return Colors.red;
+                      return Colors.green; // Use the component's default.
+                    },
+                  ),
+                ),
+                child: Text("Estop"))),
       ]
     ];
   }
@@ -124,6 +143,7 @@ class _HomePageState extends State<HomePage> {
               icon: Icon(Icons.lightbulb), label: 'Lighting'),
           BottomNavigationBarItem(
               icon: Icon(Icons.two_wheeler), label: 'Driving'),
+          BottomNavigationBarItem(icon: Icon(Icons.stop), label: 'Estop'),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
@@ -131,44 +151,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-class TextWidget extends StatefulWidget {
-  @override
-  _TextWidgetState createState() => _TextWidgetState();
-}
-
-class _TextWidgetState extends State<TextWidget>
-    with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  var roveCommString = "";
-
-  void updateText(data) {
-    setState(() {
-      roveCommString = data.toString();
-    });
-    print(roveCommString);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(vsync: this);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    callbacks[1001] = [
-      updateText,
-    ];
-    return Text("$roveCommString");
-  }
-}
-// #enddocregion build
-
-
