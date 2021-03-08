@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../RoveComm.dart';
 import 'dart:developer' as developer;
@@ -15,33 +17,41 @@ class DriveView extends StatefulWidget {
 
 class _DriveViewState extends State<DriveView> {
   var timeLast = DateTime.now().millisecondsSinceEpoch;
+  int leftSpeed = 0;
+  int rightSpeed = 0;
+  Timer timer;
 
-  void sendDriveCommand(double direction, double magnitude) {
-    if (DateTime.now().millisecondsSinceEpoch - timeLast > 100) {
-      print("Magnitude: $magnitude");
-      print("Direction: $direction");
-      int left = 0;
-      int right = 0;
-      if (direction > 150 && direction < 210) {
-        left = -map_range(magnitude, 0, 1, 0, 300);
-        right = -map_range(magnitude, 0, 1, 0, 300);
-
-        RC_Node.sendCommand(
-            "1000", DataTypes.INT16_T, [left, right], "192.168.1.134", false);
-      } else if (direction > 330 || direction < 30) {
-        left = map_range(magnitude, 0, 1, 0, 300);
-        right = map_range(magnitude, 0, 1, 0, 300);
-
-        RC_Node.sendCommand(
-            "1000", DataTypes.INT16_T, [left, right], "192.168.1.134", false);
-      }
-      timeLast = DateTime.now().millisecondsSinceEpoch;
+  int setSpeed(double direction, double magnitude) {
+    if (direction > 150 && direction < 210) {
+      return -map_range(magnitude, 0, 1, 0, 300);
+    } else if (direction > 330 || direction < 30) {
+      return map_range(magnitude, 0, 1, 0, 300);
+    } else {
+      return 0;
     }
+  }
+
+  void sendDriveCommand() {
+    print("Sending");
+    RC_Node.sendCommand("1000", DataTypes.INT16_T, [leftSpeed, rightSpeed],
+        "192.168.1.133", false);
+  }
+
+  @override
+  void initState() {
+    timer = new Timer.periodic(
+        Duration(milliseconds: 100), (Timer t) => sendDriveCommand());
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(RC_Node);
     return Container(
       child: Center(
         child: Column(
@@ -55,7 +65,13 @@ class _DriveViewState extends State<DriveView> {
                 JoystickView(
                     size: 150,
                     interval: Duration(milliseconds: 50),
-                    onDirectionChanged: sendDriveCommand),
+                    onDirectionChanged: (dir, mag) =>
+                        {leftSpeed = setSpeed(dir, mag)}),
+                JoystickView(
+                    size: 150,
+                    interval: Duration(milliseconds: 50),
+                    onDirectionChanged: (dir, mag) =>
+                        {rightSpeed = setSpeed(dir, mag)}),
               ],
             )
           ],

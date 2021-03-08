@@ -9,7 +9,6 @@ class LightingView extends StatefulWidget {
 class _LightingViewState extends State<LightingView> {
   String dropdownValue = 'Teleop';
   List<String> State = <String>['Teleop', 'Autonomy', 'Reached Goal'];
-
   @override
   Widget build(BuildContext context) {
     return Container(
