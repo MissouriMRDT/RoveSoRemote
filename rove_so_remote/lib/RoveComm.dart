@@ -235,3 +235,6 @@ class RoveComm {
     var bytes = udpSock.send(listBuffer, InternetAddress(ip), port);
   }
 }
+
+// Initialize RoveComm node
+final RC_Node = RoveComm();
