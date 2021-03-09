@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rove_so_remote/main.dart';
 import '../RoveComm.dart';
 import 'dart:developer' as developer;
 import 'package:control_pad/control_pad.dart';
+import 'Settings.dart';
 
 int map_range(double x, int inMin, int inMax, int outMin, int outMax) {
   return ((x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin).round();
@@ -22,10 +24,11 @@ class _DriveViewState extends State<DriveView> {
   bool fullscreen = false;
 
   int setSpeed(double direction, double magnitude) {
+    print(getDrivePower());
     if (direction > 150 && direction < 210) {
-      return -map_range(magnitude, 0, 1, 0, 300);
+      return -map_range(magnitude, 0, 1, 0, getDrivePower().toInt());
     } else if (direction > 330 || direction < 30) {
-      return map_range(magnitude, 0, 1, 0, 300);
+      return map_range(magnitude, 0, 1, 0, getDrivePower().toInt());
     } else {
       return 0;
     }
@@ -34,7 +37,7 @@ class _DriveViewState extends State<DriveView> {
   void sendDriveCommand() {
     print("Sending");
     RC_Node.sendCommand("1000", DataTypes.INT16_T, [leftSpeed, rightSpeed],
-        "192.168.1.133", false);
+        "192.168.1.134", false);
   }
 
   @override

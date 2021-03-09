@@ -10,6 +10,8 @@ import 'RoveComm.dart';
 import 'dart:developer' as developer;
 import 'package:control_pad/control_pad.dart';
 
+import 'components/Settings.dart';
+
 void main() => runApp(RoveSoRemoteApp());
 
 class RoveSoRemoteApp extends StatelessWidget {
@@ -53,8 +55,12 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text("RoveSoRemote"),
         actions: [
-          IconButton(icon: Icon(Icons.settings), onPressed: () => null),
+          IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingsView()))),
         ],
+        toolbarHeight: 50,
       ),
       body: Center(
         child: Column(
