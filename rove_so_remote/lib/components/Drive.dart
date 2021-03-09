@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../RoveComm.dart';
 import 'dart:developer' as developer;
 import 'package:control_pad/control_pad.dart';
@@ -15,10 +16,10 @@ class DriveView extends StatefulWidget {
 }
 
 class _DriveViewState extends State<DriveView> {
-  var timeLast = DateTime.now().millisecondsSinceEpoch;
   int leftSpeed = 0;
   int rightSpeed = 0;
   Timer timer;
+  bool fullscreen = false;
 
   int setSpeed(double direction, double magnitude) {
     if (direction > 150 && direction < 210) {
@@ -55,6 +56,23 @@ class _DriveViewState extends State<DriveView> {
       child: Center(
         child: Column(
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                    onPressed: () {
+                      if (!fullscreen) {
+                        SystemChrome.setEnabledSystemUIOverlays([]);
+                        fullscreen = true;
+                      } else {
+                        SystemChrome.setEnabledSystemUIOverlays(
+                            SystemUiOverlay.values);
+                        fullscreen = false;
+                      }
+                    },
+                    child: Icon(Icons.fullscreen))
+              ],
+            ),
             Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment
