@@ -12,8 +12,8 @@ class _EStopViewState extends State<EStopView> {
     return Container(
       child: Center(
         child: SizedBox(
-            width: 300.0,
-            height: 400.0,
+            width: 2 * MediaQuery.of(context).size.width / 3,
+            height: MediaQuery.of(context).size.height / 3,
             child: ElevatedButton(
                 onPressed: () {
                   RC_Node.sendCommand(
