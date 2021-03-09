@@ -5,9 +5,8 @@ import '../RoveComm.dart';
 import 'dart:developer' as developer;
 import 'package:control_pad/control_pad.dart';
 
-int map_range(double x, int in_min, int in_max, int out_min, int out_max) {
-  return ((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min)
-      .round();
+int map_range(double x, int inMin, int inMax, int outMin, int outMax) {
+  return ((x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin).round();
 }
 
 class DriveView extends StatefulWidget {

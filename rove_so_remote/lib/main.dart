@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text("RoveSoRemote"),
         actions: [
-          IconButton(icon: Icon(Icons.wifi), onPressed: () => null),
+          IconButton(icon: Icon(Icons.settings), onPressed: () => null),
         ],
       ),
       body: Center(

@@ -57,20 +57,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
-  dart_ping:
-    dependency: "direct main"
-    description:
-      name: dart_ping
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.4"
-  english_words:
-    dependency: "direct main"
-    description:
-      name: english_words
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.1.5"
   fake_async:
     dependency: transitive
     description:
@@ -83,6 +69,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_colorpicker:
+    dependency: "direct main"
+    description:
+      name: flutter_colorpicker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.5"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -172,3 +165,4 @@ packages:
     version: "2.1.0"
 sdks:
   dart: ">=2.12.0-0.0 <3.0.0"
+  flutter: ">=1.5.4"
