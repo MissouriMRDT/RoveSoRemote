@@ -18,7 +18,6 @@ class _EStopViewState extends State<EStopView> {
                 onPressed: () {
                   RC_Node.sendCommand(
                       "2000", DataTypes.UINT8_T, 0, "192.168.1.133", false);
-                  print("Pressed");
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(
