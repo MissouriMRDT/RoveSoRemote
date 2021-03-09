@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:rove_so_remote/components/Cameras.dart';
 import 'package:rove_so_remote/components/Drive.dart';
 import 'package:rove_so_remote/components/Estop.dart';
 import 'package:rove_so_remote/components/Lighting.dart';
@@ -47,6 +48,7 @@ class _HomePageState extends State<HomePage> {
       LightingView(),
       DriveView(),
       EStopView(),
+      ChewieDemo()
     ];
   }
 
@@ -69,12 +71,14 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(
               icon: Icon(Icons.lightbulb), label: 'Lighting'),
           BottomNavigationBarItem(
               icon: Icon(Icons.two_wheeler), label: 'Driving'),
           BottomNavigationBarItem(icon: Icon(Icons.stop), label: 'Estop'),
+          BottomNavigationBarItem(icon: Icon(Icons.stop), label: 'Cameras'),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,

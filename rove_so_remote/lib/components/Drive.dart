@@ -93,7 +93,7 @@ class _DriveViewState extends State<DriveView> {
                     onDirectionChanged: (dir, mag) =>
                         {rightSpeed = setSpeed(dir, mag)}),
               ],
-            )
+            ),
           ],
         ),
       ),
