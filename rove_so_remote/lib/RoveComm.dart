@@ -140,7 +140,7 @@ class RoveComm {
   var tcpSock;
 
   RoveComm() {
-    RawDatagramSocket.bind("192.168.1.169", 11000)
+    RawDatagramSocket.bind(InternetAddress.anyIPv4, 11000)
         .then((RawDatagramSocket sock) {
       udpSock = sock;
       sock.listen(dataHandler,
