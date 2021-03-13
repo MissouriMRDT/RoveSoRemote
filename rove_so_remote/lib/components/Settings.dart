@@ -10,13 +10,24 @@ double getDrivePower() {
   return drivePower;
 }
 
+double restartTime = 0;
+
+void setRestartTime(double val) {
+  restartTime = val;
+}
+
+double getRestartTime() {
+  return restartTime;
+}
+
 class SettingsView extends StatefulWidget {
   @override
   _SettingsViewState createState() => _SettingsViewState();
 }
 
 class _SettingsViewState extends State<SettingsView> {
-  double _currentSliderValue = 20;
+  double _currentDriveSliderValue = 20;
+  double _currentRestartSliderValue = 20;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +39,7 @@ class _SettingsViewState extends State<SettingsView> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Drive Power"),
+              Text("Drive Power:"),
               Slider(
                 value: drivePower,
                 min: 0,
@@ -42,6 +53,21 @@ class _SettingsViewState extends State<SettingsView> {
               ),
               Text(
                 "${drivePower.round()}",
+              ),
+              Text("Restart Time:"),
+              Slider(
+                value: restartTime,
+                min: 0,
+                max: 20,
+                label: restartTime.round().toString(),
+                onChanged: (double value) {
+                  setState(() {
+                    setRestartTime(value);
+                  });
+                },
+              ),
+              Text(
+                "${restartTime.round()}",
               ),
             ],
           ),

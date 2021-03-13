@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rove_so_remote/components/Settings.dart';
 import '../RoveComm.dart';
 
 class EStopView extends StatefulWidget {
@@ -16,8 +17,8 @@ class _EStopViewState extends State<EStopView> {
             height: MediaQuery.of(context).size.height / 3,
             child: ElevatedButton(
                 onPressed: () {
-                  RC_Node.sendCommand(
-                      "2000", DataTypes.UINT8_T, 0, "192.168.1.133", false);
+                  RC_Node.sendCommand("2000", DataTypes.UINT8_T,
+                      getRestartTime().round(), "192.168.1.133", false);
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(

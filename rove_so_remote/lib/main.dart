@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
       LightingView(),
       DriveView(),
       EStopView(),
-      ChewieDemo()
+      CameraView()
     ];
   }
 
