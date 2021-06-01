@@ -43,6 +43,6 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ env.APP_VERSION }}
-          name: "Release: " + $(date +'%Y-%m-%d_%H)
+          name: "Release: $(date +'%Y-%m-%d_%H)"
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: "./rove_so_remote/build/app/outputs/apk/release/*.apk,./rove_so_remote/build/ios/iphoneos/*.ipa"
