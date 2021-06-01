@@ -36,15 +36,8 @@ jobs:
       - name: Build Android App
         run: flutter build apk --split-per-abi
       - name: Build iOS App
-        run: |
-          flutter build ios --no-codesign
-          cd build/ios/iphoneos
-          mkdir Payload
-          cd Payload
-          ln -s ../Runner.app
-          cd ..
-          zip -r app.ipa Payload    
-       - name: Release Apps
+        run: flutter build ios --no-codesign
+      - name: Release Apps
          uses: ncipollo/release-action@v1
          with:
            tag: ${{ env.APP_VERSION }}
