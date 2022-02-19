@@ -3,10 +3,10 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:rove_so_remote/components/Cameras.dart';
 import 'package:rove_so_remote/components/Drive.dart';
 import 'package:rove_so_remote/components/Estop.dart';
 import 'package:rove_so_remote/components/Lighting.dart';
+import 'package:rove_so_remote/components/Autonomy.dart';
 import 'RoveComm.dart';
 import 'dart:developer' as developer;
 import 'package:control_pad/control_pad.dart';
@@ -22,7 +22,9 @@ class RoveSoRemoteApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'RoveSoRemote',
-        theme: ThemeData(primaryColor: Colors.red),
+        theme: ThemeData(
+          primarySwatch: Colors.red,
+        ),
         home: HomePage());
   }
 }
@@ -44,11 +46,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   _HomePageState() {
+    // Load the RC manifest
+    loadManifest();
+
     _widgetOptions = <Widget>[
       LightingView(),
       DriveView(),
       EStopView(),
-      CameraView()
+      AutonomyView(),
     ];
   }
 
@@ -78,7 +83,8 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
               icon: Icon(Icons.two_wheeler), label: 'Driving'),
           BottomNavigationBarItem(icon: Icon(Icons.stop), label: 'Estop'),
-          BottomNavigationBarItem(icon: Icon(Icons.stop), label: 'Cameras'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.local_taxi), label: 'Autonomy'),
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,

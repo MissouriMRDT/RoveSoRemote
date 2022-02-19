@@ -1,24 +1,7 @@
 import 'package:flutter/material.dart';
 
 double drivePower = 300;
-
-void setDrivePower(double val) {
-  drivePower = val;
-}
-
-double getDrivePower() {
-  return drivePower;
-}
-
 double restartTime = 0;
-
-void setRestartTime(double val) {
-  restartTime = val;
-}
-
-double getRestartTime() {
-  return restartTime;
-}
 
 class SettingsView extends StatefulWidget {
   @override
@@ -47,7 +30,7 @@ class _SettingsViewState extends State<SettingsView> {
                 label: drivePower.round().toString(),
                 onChanged: (double value) {
                   setState(() {
-                    setDrivePower(value);
+                    drivePower = value;
                   });
                 },
               ),
@@ -62,7 +45,7 @@ class _SettingsViewState extends State<SettingsView> {
                 label: restartTime.round().toString(),
                 onChanged: (double value) {
                   setState(() {
-                    setRestartTime(value);
+                    restartTime = value;
                   });
                 },
               ),

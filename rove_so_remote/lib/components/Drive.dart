@@ -24,20 +24,23 @@ class _DriveViewState extends State<DriveView> {
   bool fullscreen = false;
 
   int setSpeed(double direction, double magnitude) {
-    print(getDrivePower());
+    print(drivePower);
     if (direction > 150 && direction < 210) {
-      return -map_range(magnitude, 0, 1, 0, getDrivePower().toInt());
+      return -map_range(magnitude, 0, 1, 0, drivePower.toInt());
     } else if (direction > 330 || direction < 30) {
-      return map_range(magnitude, 0, 1, 0, getDrivePower().toInt());
+      return map_range(magnitude, 0, 1, 0, drivePower.toInt());
     } else {
       return 0;
     }
   }
 
   void sendDriveCommand() {
-    print("Sending");
-    RC_Node.sendCommand("1000", DataTypes.INT16_T, [leftSpeed, rightSpeed],
-        "192.168.1.134", false);
+    RC_Node.sendCommand(
+        manifest["Drive"]["Commands"]["DriveLeftRight"]["dataId"],
+        DataTypes.INT16_T,
+        [leftSpeed, rightSpeed],
+        manifest["Drive"]["Ip"],
+        false);
   }
 
   @override
@@ -65,11 +68,12 @@ class _DriveViewState extends State<DriveView> {
                 ElevatedButton(
                     onPressed: () {
                       if (!fullscreen) {
-                        SystemChrome.setEnabledSystemUIOverlays([]);
+                        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+                            overlays: []);
                         fullscreen = true;
                       } else {
-                        SystemChrome.setEnabledSystemUIOverlays(
-                            SystemUiOverlay.values);
+                        SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+                            overlays: SystemUiOverlay.values);
                         fullscreen = false;
                       }
                     },

@@ -17,8 +17,12 @@ class _EStopViewState extends State<EStopView> {
             height: MediaQuery.of(context).size.height / 3,
             child: ElevatedButton(
                 onPressed: () {
-                  RC_Node.sendCommand("2000", DataTypes.UINT8_T,
-                      getRestartTime().round(), "192.168.1.133", false);
+                  RC_Node.sendCommand(
+                      manifest["BMS"]["Commands"]["BMSStop"]["dataId"],
+                      DataTypes.UINT8_T,
+                      restartTime.round(),
+                      manifest["BMS"]["Ip"],
+                      false);
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.resolveWith<Color>(

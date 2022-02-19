@@ -9,8 +9,11 @@ class LightingView extends StatefulWidget {
 
 class _LightingViewState extends State<LightingView> {
   // Variables to keep track of states we can send to indicate operation of Rover
-  String dropdownValue = 'Teleop';
+  String dropdownValueState = 'Teleop';
   List<String> State = <String>['Teleop', 'Autonomy', 'Reached Goal'];
+
+  String dropdownValuePattern = 'Block';
+
   List<String> Pattern = <String>[
     'Block',
     'Belgium',
@@ -39,7 +42,7 @@ class _LightingViewState extends State<LightingView> {
           children: [
             Text("State:"),
             DropdownButton<String>(
-              value: dropdownValue,
+              value: dropdownValueState,
               iconSize: 24,
               elevation: 16,
               style: TextStyle(color: Colors.black),
@@ -49,7 +52,7 @@ class _LightingViewState extends State<LightingView> {
               ),
               onChanged: (String newValue) {
                 setState(() {
-                  dropdownValue = newValue;
+                  dropdownValueState = newValue;
                 });
               },
               items: State.map<DropdownMenuItem<String>>((String value) {
@@ -62,8 +65,13 @@ class _LightingViewState extends State<LightingView> {
             ElevatedButton(
                 child: Text("Send"),
                 onPressed: () {
-                  RC_Node.sendCommand("7003", DataTypes.UINT8_T,
-                      State.indexOf(dropdownValue), "192.168.1.140", false);
+                  RC_Node.sendCommand(
+                      manifest["Multimedia"]["Commands"]["StateDisplay"]
+                          ["dataId"],
+                      DataTypes.UINT8_T,
+                      State.indexOf(dropdownValueState),
+                      manifest["Multimedia"]["Ip"],
+                      false);
                 }),
           ],
         ),
@@ -73,7 +81,7 @@ class _LightingViewState extends State<LightingView> {
           children: [
             Text("Pattern:"),
             DropdownButton<String>(
-              value: dropdownValue,
+              value: dropdownValuePattern,
               iconSize: 24,
               elevation: 16,
               style: TextStyle(color: Colors.black),
@@ -83,7 +91,7 @@ class _LightingViewState extends State<LightingView> {
               ),
               onChanged: (String newValue) {
                 setState(() {
-                  dropdownValue = newValue;
+                  dropdownValuePattern = newValue;
                 });
               },
               items: Pattern.map<DropdownMenuItem<String>>((String value) {
@@ -96,8 +104,13 @@ class _LightingViewState extends State<LightingView> {
             ElevatedButton(
                 child: Text("Send"),
                 onPressed: () {
-                  RC_Node.sendCommand("7002", DataTypes.UINT8_T,
-                      Pattern.indexOf(dropdownValue), "192.168.1.140", false);
+                  RC_Node.sendCommand(
+                      manifest["Multimedia"]["Commands"]["LEDPatterns"]
+                          ["dataId"],
+                      DataTypes.UINT8_T,
+                      Pattern.indexOf(dropdownValuePattern),
+                      manifest["Multimedia"]["Ip"],
+                      false);
                 }),
           ],
         ),
@@ -107,7 +120,7 @@ class _LightingViewState extends State<LightingView> {
             Text("RGB: "),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: currentColor, // background
+                primary: Colors.red, // background
               ),
               onPressed: () {
                 showDialog(
@@ -150,10 +163,10 @@ class _LightingViewState extends State<LightingView> {
                 child: Text("Send"),
                 onPressed: () {
                   RC_Node.sendCommand(
-                      "7001",
+                      manifest["Multimedia"]["Commands"]["LEDRGB"]["dataId"],
                       DataTypes.UINT8_T,
                       [currentColor.red, currentColor.green, currentColor.blue],
-                      "192.168.1.140",
+                      manifest["Multimedia"]["Ip"],
                       false);
                 }),
           ],

@@ -6,6 +6,8 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:developer' as developer;
 
+import 'package:flutter/services.dart';
+
 RawDatagramSocket socket;
 int RoveCommUDPPort = 11000;
 
@@ -37,6 +39,13 @@ var DataSize = {
 var callbacks = {};
 
 StreamController stream;
+dynamic manifest;
+
+Future<void> loadManifest() async {
+  final String response =
+      await rootBundle.loadString('assets/RovecommManifest.json');
+  manifest = await json.decode(response)["RovecommManifest"];
+}
 
 List decodePacket(int datatype, int datacount, ByteData buf) {
   final dataType = DataTypes.values[datatype];
@@ -164,7 +173,7 @@ class RoveComm {
   }
 
   void sendCommand(
-      String dataId, DataTypes datatype, data, String ip, bool reliable) {
+      int dataId, DataTypes datatype, data, String ip, bool reliable) {
     const VersionNumber = 2;
 
     //single items are also treated as lists
@@ -180,7 +189,7 @@ class RoveComm {
 
     // Setting the header bytes
     buff.setUint8(0, VersionNumber);
-    buff.setUint16(1, int.parse(dataId));
+    buff.setUint16(1, dataId);
     buff.setUint8(3, dataCount);
     buff.setUint8(4, datatype.index);
 
