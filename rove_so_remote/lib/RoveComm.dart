@@ -122,14 +122,14 @@ void parsePackets(data) {
   //print(data);
   var bytes = Uint8List.fromList(data);
 
-  const VersionNumber = 2;
-  const headerLength = 5;
+  const VersionNumber = 25;
+  const headerLength = 6;
 
   // Reading in the header
   final version = bytes[0];
   final dataId = bytes[1] << 8 | bytes[2];
-  final dataCount = bytes[3];
-  final dataType = bytes[4];
+  final dataCount = bytes[3] << 8 | bytes[4];
+  final dataType = bytes[5];
 
   var rawdata = bytes.sublist(headerLength);
 
@@ -174,7 +174,7 @@ class RoveComm {
 
   void sendCommand(
       int dataId, DataTypes datatype, data, String ip, bool reliable) {
-    const VersionNumber = 2;
+    const VersionNumber = 25;
 
     //single items are also treated as lists
     if (!(data is List)) {
@@ -182,7 +182,7 @@ class RoveComm {
     }
     final dataCount = data.length;
     final port = 11000;
-    final headerLength = 5;
+    final headerLength = 6;
 
     // Allocating the right number of bytes (size of full packet)
     var buff = ByteData(headerLength + dataCount * DataSize[datatype.index]);
@@ -190,53 +190,53 @@ class RoveComm {
     // Setting the header bytes
     buff.setUint8(0, VersionNumber);
     buff.setUint16(1, dataId);
-    buff.setUint8(3, dataCount);
-    buff.setUint8(4, datatype.index);
+    buff.setUint16(3, dataCount);
+    buff.setUint8(5, datatype.index);
 
     switch (datatype) {
       case DataTypes.INT8_T:
         for (int i = 0; i < data.length; i++) {
-          buff.setInt8(5 + i * DataSize[datatype.index], data[i]);
+          buff.setInt8(headerLength + i * DataSize[datatype.index], data[i]);
         }
         break;
       case DataTypes.UINT8_T:
         for (int i = 0; i < data.length; i++) {
-          buff.setUint8(5 + i * DataSize[datatype.index], data[i]);
+          buff.setUint8(headerLength + i * DataSize[datatype.index], data[i]);
         }
         break;
       case DataTypes.INT16_T:
         for (int i = 0; i < data.length; i++) {
-          buff.setInt16(5 + i * DataSize[datatype.index], data[i]);
+          buff.setInt16(headerLength + i * DataSize[datatype.index], data[i]);
         }
         break;
       case DataTypes.UINT16_T:
         for (int i = 0; i < data.length; i++) {
-          buff.setUint16(5 + i * DataSize[datatype.index], data[i]);
+          buff.setUint16(headerLength + i * DataSize[datatype.index], data[i]);
         }
         break;
       case DataTypes.INT32_T:
         for (int i = 0; i < data.length; i++) {
-          buff.setInt32(5 + i * DataSize[datatype.index], data[i]);
+          buff.setInt32(headerLength + i * DataSize[datatype.index], data[i]);
         }
         break;
       case DataTypes.UINT32_T:
         for (int i = 0; i < data.length; i++) {
-          buff.setUint32(5 + i * DataSize[datatype.index], data[i]);
+          buff.setUint32(headerLength + i * DataSize[datatype.index], data[i]);
         }
         break;
       case DataTypes.FLOAT_T:
         for (int i = 0; i < data.length; i++) {
-          buff.setFloat32(5 + i * DataSize[datatype.index], data[i]);
+          buff.setFloat32(headerLength + i * DataSize[datatype.index], data[i]);
         }
         break;
       case DataTypes.DOUBLE_T:
         for (int i = 0; i < data.length; i++) {
-          buff.setFloat64(5 + i * DataSize[datatype.index], data[i]);
+          buff.setFloat64(headerLength + i * DataSize[datatype.index], data[i]);
         }
         break;
       case DataTypes.CHAR:
         for (int i = 0; i < data.length; i++) {
-          buff.setInt8(5 + i * DataSize[datatype.index], data[i]);
+          buff.setInt8(headerLength + i * DataSize[datatype.index], data[i]);
         }
         break;
     }
